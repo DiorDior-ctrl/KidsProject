@@ -1,0 +1,16 @@
+<Solution>
+  <Folder Name="/src/" />
+  <Folder Name="/src/Services/" />
+  <Folder Name="/src/Services/GamificationService/" />
+  <Folder Name="/src/Services/LessonService/" />
+  <Folder Name="/src/Services/NotificationService/" />
+  <Folder Name="/src/Services/ProgressService/" />
+  <Folder Name="/src/Services/UserService/">
+    <Project Path="UserService.API/UserService.API.csproj" />
+    <Project Path="UserService.Application/UserService.Application.csproj" />
+    <Project Path="UserService.Domain/UserService.Domain.csproj" />
+    <Project Path="UserService.Infrastructure/UserService.Infrastructure.csproj" />
+    <Project Path="UserService.Test/UserService.Test.csproj" />
+  </Folder>
+  <Folder Name="/src/Shared/" />
+</Solution>
