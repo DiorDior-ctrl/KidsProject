@@ -118,9 +118,12 @@ function ChildCard({ child }: { child: Child }) {
         <button className="flex-1 py-2 px-4 text-sm font-medium rounded-xl bg-red-600 text-white hover:bg-red-700 transition-colors">
           Shiko progresin
         </button>
-        <button className="flex-1 py-2 px-4 text-sm font-medium rounded-xl border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+        <Link
+          href="/dashboard/lesson/alphabet"
+          className="flex-1 py-2 px-4 text-sm font-medium rounded-xl border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-center"
+        >
           Fillo mësimin
-        </button>
+        </Link>
       </div>
     </div>
   );
@@ -243,6 +246,67 @@ export default function DashboardPage() {
               </div>
             </div>
           ))}
+        </div>
+
+        {/* Lessons section */}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-bold text-gray-900 dark:text-white">
+              Mësimet
+            </h2>
+            <span className="text-xs text-gray-400 dark:text-gray-500">
+              1 nga 6 të disponueshme
+            </span>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <Link
+              href="/dashboard/lesson/alphabet"
+              className="group flex items-center gap-4 bg-white dark:bg-gray-900 rounded-2xl border-2 border-purple-200 dark:border-purple-800 p-5 hover:border-purple-400 dark:hover:border-purple-600 hover:shadow-lg transition-all"
+            >
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center text-3xl flex-shrink-0 shadow-md">
+                🔤
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="font-bold text-gray-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
+                  Alfabeti Shqip
+                </p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                  36 shkronja • Fillestar
+                </p>
+                <div className="mt-2 w-full bg-gray-100 dark:bg-gray-800 rounded-full h-1.5 overflow-hidden">
+                  <div className="h-full w-[35%] rounded-full bg-gradient-to-r from-purple-400 to-pink-400" />
+                </div>
+              </div>
+              <span className="text-purple-400 dark:text-purple-500 text-xl group-hover:translate-x-1 transition-transform">
+                →
+              </span>
+            </Link>
+
+            {[
+              { emoji: "🗣️", title: "Fjalët e Para", sub: "50 fjalë • Fillestar" },
+              { emoji: "📖", title: "Leximi Bazë", sub: "10 histori • Mesatar" },
+            ].map((lesson) => (
+              <div
+                key={lesson.title}
+                className="flex items-center gap-4 bg-white dark:bg-gray-900 rounded-2xl border-2 border-gray-100 dark:border-gray-800 p-5 opacity-60 cursor-not-allowed"
+              >
+                <div className="w-14 h-14 rounded-2xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-3xl flex-shrink-0">
+                  {lesson.emoji}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-bold text-gray-900 dark:text-white">
+                    {lesson.title}
+                  </p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                    {lesson.sub}
+                  </p>
+                  <span className="inline-block mt-2 text-xs bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 px-2 py-0.5 rounded-full">
+                    Së shpejti
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
