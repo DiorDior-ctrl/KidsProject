@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Navbar() {
   return (
@@ -8,7 +9,7 @@ export default function Navbar() {
           href="/"
           className="flex items-center gap-2 font-bold text-xl text-gray-900 dark:text-white hover:text-red-600 dark:hover:text-red-400 transition-colors"
         >
-          <span className="text-2xl">🦅</span>
+          <Image src="/eagle_mascot.png" alt="KidsProject" width={36} height={36} className="rounded-lg" />
           <span>KidsProject</span>
         </Link>
 

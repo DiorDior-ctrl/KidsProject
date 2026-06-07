@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 
 interface Child {
   id: string;
@@ -169,7 +170,7 @@ export default function DashboardPage() {
   if (!ready) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-950">
-        <div className="text-4xl animate-pulse">🦅</div>
+        <Image src="/eagle_mascot.png" alt="Duke ngarkuar..." width={64} height={64} className="animate-pulse" />
       </div>
     );
   }
@@ -180,7 +181,7 @@ export default function DashboardPage() {
       <header className="sticky top-0 z-50 border-b border-gray-200 dark:border-gray-800 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <span className="text-2xl">🦅</span>
+            <Image src="/eagle_mascot.png" alt="KidsProject" width={32} height={32} className="rounded-lg" />
             <span className="font-bold text-gray-900 dark:text-white hidden sm:block">
               KidsProject
             </span>

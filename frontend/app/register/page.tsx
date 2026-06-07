@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -46,7 +47,7 @@ export default function RegisterPage() {
         {/* Logo */}
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center gap-2">
-            <span className="text-4xl">🦅</span>
+            <Image src="/eagle_mascot.png" alt="KidsProject" width={48} height={48} className="rounded-xl" />
             <span className="text-2xl font-bold text-gray-900 dark:text-white">
               KidsProject
             </span>
