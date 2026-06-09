@@ -2,7 +2,13 @@
   <Folder Name="/src/" />
   <Folder Name="/src/Services/" />
   <Folder Name="/src/Services/GamificationService/" />
-  <Folder Name="/src/Services/LessonService/" />
+  <Folder Name="/src/Services/LessonService/">
+    <Project Path="LessonService.Application/LessonService.Application.csproj" Id="f40a5562-c510-4833-b593-05eceb6e497a" />
+    <Project Path="LessonService.Domain/LessonService.Domain.csproj" Id="dbad7cd6-dea7-4aaf-beeb-1897fba9d5cd" />
+    <Project Path="LessonService.Infrastructure/LessonService.Infrastructure.csproj" Id="65cc3796-3cee-41b5-97fa-8dcf4c980f9d" />
+    <Project Path="LessonService.Tests/LessonService.Tests.csproj" Id="9b20996f-203a-417b-bb3c-be23f2157fb2" />
+    <Project Path="LessonService/LessonService.API.csproj" Id="896c63c7-99ab-4a46-8758-04fd0c9e02b6" />
+  </Folder>
   <Folder Name="/src/Services/NotificationService/" />
   <Folder Name="/src/Services/ProgressService/" />
   <Folder Name="/src/Services/UserService/">
