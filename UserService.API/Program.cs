@@ -2,15 +2,20 @@ using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
+using System.IdentityModel.Tokens.Jwt;
 using UserService.API.Middleware;
 using UserService.Application.Repositories.Interfaces;
 using UserService.Application.Services;
 using UserService.Application.Services.Interfaces;
 using UserService.Application.Validators;
 using UserService.Infrastructure.Data;
+using UserService.Infrastructure.ExternalServices;
 using UserService.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// CLEAR DEFAULT CLAIM MAPPINGS — lexo rolet saktë nga Keycloak
+JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
 // DATABASE
 builder.Services.AddDbContext<UserServiceDbContext>(options =>
@@ -65,7 +70,7 @@ builder.Services.AddScoped<ISessionRepository, SessionRepository>();
 builder.Services.AddValidatorsFromAssemblyContaining<RegisterParentValidator>();
 
 // SERVICES
-//builder.Services.AddScoped<IKeycloakService, KeycloakService>();
+builder.Services.AddHttpClient<IKeyCloakService, KeycloakService>();
 builder.Services.AddScoped<IUserService, UserService.Application.Services.UserService>();
 builder.Services.AddScoped<IChildProfileService, ChildProfileService>();
 
@@ -78,9 +83,17 @@ var app = builder.Build();
 // AUTO MIGRATION — vetëm në Development
 if (app.Environment.IsDevelopment())
 {
-    using var scope = app.Services.CreateScope();
-    var db = scope.ServiceProvider.GetRequiredService<UserServiceDbContext>();
-    await db.Database.MigrateAsync();
+    try
+    {
+        using var scope = app.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<UserServiceDbContext>();
+        await db.Database.MigrateAsync();
+    }
+    catch (Exception ex)
+    {
+        var logger = app.Services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "Migration dështoi: {Message}", ex.Message);
+    }
 
     app.MapOpenApi();
     app.MapScalarApiReference(options =>

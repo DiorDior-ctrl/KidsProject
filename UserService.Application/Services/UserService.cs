@@ -101,6 +101,20 @@ namespace UserService.Application.Services
                 user.CreatedAt
                 );
         }
+        public async Task<UserResponse> GetByKeycloakIdAsync(
+    string keycloakId,
+    CancellationToken cancellationToken = default)
+        {
+            var user = await _userRepository.GetByKeycloakIdAsync(keycloakId, cancellationToken)
+                ?? throw new NotFoundException("User nuk u gjet.");
+
+            return new UserResponse(
+                user.Id,
+                user.Email,
+                user.Role.ToString(),
+                user.IsActive,
+                user.CreatedAt);
+        }
         public async Task LinkChildToParentAsync(Guid parentId, LinkChildRequest request, CancellationToken cancellationToken = default)
         {
             var parent = await _userRepository.GetByIdAsync(parentId, cancellationToken)

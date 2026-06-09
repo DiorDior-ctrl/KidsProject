@@ -4,12 +4,23 @@ services:
     container_name: kidsproject-postgres
     environment:
       POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: kidsproject
       POSTGRES_DB: userservice_db
       POSTGRES_HOST_AUTH_METHOD: trust
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:24.0
+    container_name: kidsproject-keycloak
+    command: start-dev
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    ports:
+      - "8080:8080"
 
 volumes:
   postgres_data:

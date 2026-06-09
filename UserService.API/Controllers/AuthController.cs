@@ -21,10 +21,13 @@ public class AuthController : ControllerBase
     [HttpPost("register/child")]
     public async Task<IActionResult> RegisterChild([FromBody] RegisterChildRequest request ,CancellationToken cancellationToken)
     {
-        var parentId = Guid.Parse(User.FindFirst("sub")?.Value
-            ?? throw new UnauthorizedAccessException());
 
-        var result = await _userService.RegisterChildAsync(parentId, request, cancellationToken);
+        var keycloakId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value
+        ?? throw new UnauthorizedAccessException();
+
+        var parent = await _userService.GetByKeycloakIdAsync(keycloakId, cancellationToken);
+
+        var result = await _userService.RegisterChildAsync(parent.Id, request, cancellationToken);
         return CreatedAtAction(nameof(RegisterChild), result);
     }
     [HttpPost("login")]
