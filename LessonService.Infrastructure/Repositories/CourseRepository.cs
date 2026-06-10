@@ -20,7 +20,7 @@ namespace LessonService.Infrastructure.Repositories
         }
         public async Task<IEnumerable<Course>> GetAllAsync(CancellationToken cancellationToken = default)
         {
-            return await _context.Courses.OrderBy(c => c.Tittle).ToListAsync();
+            return await _context.Courses.OrderBy(c => c.Title).ToListAsync();
         }
         public async Task AddAsync(Course course, CancellationToken cancellationToken = default)
         {
