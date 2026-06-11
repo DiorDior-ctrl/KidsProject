@@ -17,6 +17,8 @@ var builder = WebApplication.CreateBuilder(args);
 // CLEAR DEFAULT CLAIM MAPPINGS — lexo rolet saktë nga Keycloak
 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
 // DATABASE
 builder.Services.AddDbContext<UserServiceDbContext>(options =>
 {

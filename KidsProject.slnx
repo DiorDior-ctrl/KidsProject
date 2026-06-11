@@ -10,7 +10,13 @@
     <Project Path="LessonService/LessonService.API.csproj" Id="896c63c7-99ab-4a46-8758-04fd0c9e02b6" />
   </Folder>
   <Folder Name="/src/Services/NotificationService/" />
-  <Folder Name="/src/Services/ProgressService/" />
+  <Folder Name="/src/Services/ProgressService/">
+    <Project Path="ProgressService.API/ProgressService.API.csproj" Id="6c10c468-3a26-4c26-872e-7a95752ca978" />
+    <Project Path="ProgressService.Application/ProgressService.Application.csproj" Id="cd0dd2bf-338d-4faf-a6fc-fca99463a08d" />
+    <Project Path="ProgressService.Domain/ProgressService.Domain.csproj" Id="5990d918-dd3a-4be8-af93-23f9c32502cb" />
+    <Project Path="ProgressService.Infrastructure/ProgressService.Infrastructure.csproj" Id="4d21d492-50d2-43de-a256-27b04f17922c" />
+    <Project Path="ProgressService.Tests/ProgressService.Tests.csproj" Id="af5f7396-b88b-4525-af2f-24de6cd71ef4" />
+  </Folder>
   <Folder Name="/src/Services/UserService/">
     <Project Path="UserService.API/UserService.API.csproj" />
     <Project Path="UserService.Application/UserService.Application.csproj" />
