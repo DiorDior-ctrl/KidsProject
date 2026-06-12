@@ -32,6 +32,15 @@ public class ExerciseController : ControllerBase
         return Ok(result);
     }
 
+    // Endpoint vetëm për komunikim internal mes service-ve
+    [HttpGet("{id}/answer")]
+    [Authorize(Policy = "AdminOnly")]
+    public async Task<IActionResult> GetExerciseAnswer(Guid id, CancellationToken cancellationToken)
+    {
+        var result = await _exerciseService.GetByIdAsync(id, cancellationToken);
+        return Ok(new { correctAnswer = result.CorrectAnswer, xpReward = result.XpReward });
+    }
+
     [HttpPost]
     [Authorize(Policy = "AdminOnly")]
     public async Task<IActionResult> Create(

@@ -25,7 +25,8 @@ public class Exercise
         int orderIndex,
         string contentJson,
         string correctAnswer,
-        int xpReward)
+        int xpReward,
+        string CorrectAnswer)
     {
         if (string.IsNullOrWhiteSpace(contentJson))
             throw new BusinessException("Content nuk mund të jetë bosh.");

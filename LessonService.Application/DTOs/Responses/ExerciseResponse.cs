@@ -9,5 +9,6 @@ public record ExerciseResponse(
     ExerciseType Type,
     int OrderIndex,
     string ContentJson,
-    int XpReward
+    int XpReward,
+    string CorrectAnswer
 );

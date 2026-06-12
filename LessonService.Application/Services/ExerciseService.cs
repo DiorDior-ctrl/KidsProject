@@ -30,7 +30,7 @@ namespace LessonService.Application.Services
                 ?? throw new NotFoundException("Exercise" , lessonId);
             return exercise.Select(e => new ExerciseResponse(
            e.Id, e.LessonId, e.Type,
-           e.OrderIndex, e.ContentJson, e.XpReward));
+           e.OrderIndex, e.ContentJson, e.XpReward,e.CorrectAnswer));
 
         }
         public async Task<ExerciseResponse> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
@@ -39,7 +39,7 @@ namespace LessonService.Application.Services
                 ?? throw new NotFoundException("Exercise" ,id);
             return new ExerciseResponse(
             exercise.Id, exercise.LessonId, exercise.Type,
-            exercise.OrderIndex, exercise.ContentJson, exercise.XpReward);
+            exercise.OrderIndex, exercise.ContentJson, exercise.XpReward,exercise.CorrectAnswer);
 
         }
         public async Task<ExerciseResponse> CreateAsync(CreateExerciseRequest request, CancellationToken cancellationToken = default)
@@ -53,7 +53,8 @@ namespace LessonService.Application.Services
             request.OrderIndex,
             request.ContentJson,
             request.CorrectAnswer,
-            request.XpReward
+            request.XpReward,
+            request.CorrectAnswer
             );
 
             await _exerciseRepository.AddAsync(exercise, cancellationToken);
@@ -62,7 +63,7 @@ namespace LessonService.Application.Services
 
             return new ExerciseResponse(
                 exercise.Id, exercise.LessonId, exercise.Type,
-                exercise.OrderIndex, exercise.ContentJson, exercise.XpReward
+                exercise.OrderIndex, exercise.ContentJson, exercise.XpReward , exercise.CorrectAnswer
                 );
             
 

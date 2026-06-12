@@ -46,7 +46,7 @@ namespace LessonService.Application.Services
 
             var exercises = lesson.Exercises.Select(e => new ExerciseResponse(
                 e.Id, e.LessonId, e.Type,
-                e.OrderIndex, e.ContentJson, e.XpReward));
+                e.OrderIndex, e.ContentJson, e.XpReward , e.CorrectAnswer));
 
             return new LessonDetailResponse(
                 lesson.Id, lesson.ModuleId, lesson.Title,
