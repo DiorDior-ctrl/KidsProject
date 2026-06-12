@@ -61,6 +61,9 @@ builder.Services.AddAuthorization(options =>
         policy.RequireRole("Parent", "Admin"));
 });
 
+builder.Services.AddHttpContextAccessor();
+
+
 // REPOSITORIES
 builder.Services.AddScoped<ILessonSessionRepository, LessonSessionRepository>();
 builder.Services.AddScoped<IExerciseAttemptRepository, ExerciseAttemptRepository>();
