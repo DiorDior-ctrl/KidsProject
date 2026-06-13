@@ -3,7 +3,7 @@ namespace GamificationService.Domain.Models
 {
     public class UserBadge
     {
-        public Guid id {  get; private set; }
+        public Guid Id {  get; private set; }
         public Guid UserId {  get; private set; }
         public Guid BadgeId {  get; private set; }
         public DateTime EarnedAt { get; private set; }
@@ -19,7 +19,7 @@ namespace GamificationService.Domain.Models
         {
             return new UserBadge
             {
-                id = Guid.NewGuid(),
+                Id = Guid.NewGuid(),
                 UserId = userid,
                 BadgeId = badgeid,
                 EarnedAt = DateTime.UtcNow,

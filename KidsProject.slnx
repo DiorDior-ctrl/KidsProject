@@ -15,7 +15,9 @@
     <Project Path="LessonService.Tests/LessonService.Tests.csproj" Id="9b20996f-203a-417b-bb3c-be23f2157fb2" />
     <Project Path="LessonService/LessonService.API.csproj" Id="896c63c7-99ab-4a46-8758-04fd0c9e02b6" />
   </Folder>
-  <Folder Name="/src/Services/NotificationService/" />
+  <Folder Name="/src/Services/NotificationService/">
+    <Project Path="NotificationService.Domain/NotificationService.Domain.csproj" Id="1a71c855-ad0d-4b75-951d-5b896130a7c5" />
+  </Folder>
   <Folder Name="/src/Services/ProgressService/">
     <Project Path="ProgressService.API/ProgressService.API.csproj" Id="6c10c468-3a26-4c26-872e-7a95752ca978" />
     <Project Path="ProgressService.Application/ProgressService.Application.csproj" Id="cd0dd2bf-338d-4faf-a6fc-fca99463a08d" />

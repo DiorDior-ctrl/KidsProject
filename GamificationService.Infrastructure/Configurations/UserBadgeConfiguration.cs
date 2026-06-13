@@ -11,9 +11,9 @@ public class UserBadgeConfiguration : IEntityTypeConfiguration<UserBadge>
     {
         builder.ToTable("user_badges");
 
-        builder.HasKey(ub => ub.id);
+        builder.HasKey(ub => ub.Id);
 
-        builder.Property(ub => ub.id)
+        builder.Property(ub => ub.Id)
             .HasColumnName("id")
             .ValueGeneratedNever();
 
