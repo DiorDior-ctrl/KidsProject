@@ -1,7 +1,13 @@
 <Solution>
   <Folder Name="/src/" />
   <Folder Name="/src/Services/" />
-  <Folder Name="/src/Services/GamificationService/" />
+  <Folder Name="/src/Services/GamificationService/">
+    <Project Path="GamificationService.API/GamificationService.API.csproj" Id="e5329beb-c1ae-4f48-9935-ba5c35df8377" />
+    <Project Path="GamificationService.Application/GamificationService.Application.csproj" Id="ff853061-7363-4703-865b-a2d89fc05595" />
+    <Project Path="GamificationService.Domain/GamificationService.Domain.csproj" Id="142107d3-71f8-4f33-b776-886622cb6e61" />
+    <Project Path="GamificationService.Infrastructure/GamificationService.Infrastructure.csproj" Id="78caba07-4607-4bdc-bca8-31321987f9da" />
+    <Project Path="GamificationService.Tests/GamificationService.Tests.csproj" Id="aa6a27e4-43b6-4807-a24e-1bd4a355ac85" />
+  </Folder>
   <Folder Name="/src/Services/LessonService/">
     <Project Path="LessonService.Application/LessonService.Application.csproj" Id="f40a5562-c510-4833-b593-05eceb6e497a" />
     <Project Path="LessonService.Domain/LessonService.Domain.csproj" Id="dbad7cd6-dea7-4aaf-beeb-1897fba9d5cd" />
