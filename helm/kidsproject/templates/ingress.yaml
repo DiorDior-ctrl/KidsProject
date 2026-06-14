@@ -1,0 +1,48 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: kidsproject-ingress
+  namespace: {{ .Values.namespace }}
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: project-11.life-server.com
+    http:
+      paths:
+      - path: /api/v1/users
+        pathType: Prefix
+        backend:
+          service:
+            name: userservice
+            port:
+              number: 80
+      - path: /api/v1/lessons
+        pathType: Prefix
+        backend:
+          service:
+            name: lessonservice
+            port:
+              number: 80
+      - path: /api/v1/progress
+        pathType: Prefix
+        backend:
+          service:
+            name: progressservice
+            port:
+              number: 80
+      - path: /api/v1/gamification
+        pathType: Prefix
+        backend:
+          service:
+            name: gamificationservice
+            port:
+              number: 80
+      - path: /api/v1/notifications
+        pathType: Prefix
+        backend:
+          service:
+            name: notificationservice
+            port:
+              number: 80

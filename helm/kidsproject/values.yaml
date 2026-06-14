@@ -1,0 +1,87 @@
+namespace: project-11
+
+images:
+  registry: ghcr.io
+  pullPolicy: Always
+
+userservice:
+  image: ghcr.io/DiorDior-ctrl/kidsproject-userservice:latest
+  replicas: 1
+  port: 8080
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "100m"
+    limits:
+      memory: "256Mi"
+      cpu: "200m"
+
+lessonservice:
+  image: ghcr.io/DiorDior-ctrl/kidsproject-lessonservice:latest
+  replicas: 1
+  port: 8080
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "100m"
+    limits:
+      memory: "256Mi"
+      cpu: "200m"
+
+progressservice:
+  image: ghcr.io/DiorDior-ctrl/kidsproject-progressservice:latest
+  replicas: 1
+  port: 8080
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "100m"
+    limits:
+      memory: "256Mi"
+      cpu: "200m"
+
+gamificationservice:
+  image: ghcr.io/DiorDior-ctrl/kidsproject-gamificationservice:latest
+  replicas: 1
+  port: 8080
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "100m"
+    limits:
+      memory: "256Mi"
+      cpu: "200m"
+
+notificationservice:
+  image: ghcr.io/DiorDior-ctrl/kidsproject-notificationservice:latest
+  replicas: 1
+  port: 8080
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "100m"
+    limits:
+      memory: "256Mi"
+      cpu: "200m"
+
+postgresql:
+  host: kidsproject-postgres
+  port: 5432
+  username: postgres
+  password: kidsproject
+
+redis:
+  host: kidsproject-redis
+  port: 6379
+
+rabbitmq:
+  host: kidsproject-rabbitmq
+  port: 5672
+  username: guest
+  password: guest
+
+keycloak:
+  url: http://kidsproject-keycloak:8080
+  realm: kidsproject
+  clientId: userservice-client
+  clientSecret: your-secret

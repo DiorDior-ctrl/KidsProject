@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: progressservice
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: {{ .Values.progressservice.replicas }}
+  selector:
+    matchLabels:
+      app: progressservice
+  template:
+    metadata:
+      labels:
+        app: progressservice
+    spec:
+      containers:
+      - name: progressservice
+        image: {{ .Values.progressservice.image }}
+        imagePullPolicy: {{ .Values.images.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.progressservice.port }}
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Production"
+        - name: ConnectionStrings__progressserviceDb
+          value: "Host={{ .Values.postgresql.host }};Port={{ .Values.postgresql.port }};Database=progressservice_db;Username={{ .Values.postgresql.username }};Ssl Mode=Disable;"
+        - name: Keycloak__Authority
+          value: "{{ .Values.keycloak.url }}/realms/{{ .Values.keycloak.realm }}"
+        - name: Keycloak__AdminUrl
+          value: "{{ .Values.keycloak.url }}"
+        - name: Keycloak__Realm
+          value: "{{ .Values.keycloak.realm }}"
+        - name: Keycloak__ClientId
+          value: "{{ .Values.keycloak.clientId }}"
+        - name: Keycloak__ClientSecret
+          valueFrom:
+            secretKeyRef:
+              name: kidsproject-secrets
+              key: keycloak-client-secret
+        - name: Keycloak__Audience
+          value: "account"
+        - name: Keycloak__RequireHttpsMetadata
+          value: "false"
+        - name: Redis__ConnectionString
+          value: "{{ .Values.redis.host }}:{{ .Values.redis.port }}"
+        resources:
+          requests:
+            memory: {{ .Values.progressservice.resources.requests.memory }}
+            cpu: {{ .Values.progressservice.resources.requests.cpu }}
+          limits:
+            memory: {{ .Values.progressservice.resources.limits.memory }}
+            cpu: {{ .Values.progressservice.resources.limits.cpu }}
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: {{ .Values.progressservice.port }}
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: {{ .Values.progressservice.port }}
+          initialDelaySeconds: 15
+          periodSeconds: 5
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: progressservice
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    app: progressservice
+  ports:
+  - port: 80
+    targetPort: {{ .Values.progressservice.port }}
+  type: ClusterIP

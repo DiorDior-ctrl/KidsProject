@@ -1,0 +1,97 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  REGISTRY: ghcr.io
+  GITHUB_USERNAME: DiorDior-ctrl
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and Push UserService
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          dockerfile: UserService.API/Dockerfile
+          push: true
+          tags: ghcr.io/DiorDior-ctrl/kidsproject-userservice:latest
+
+      - name: Build and Push LessonService
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          dockerfile: LessonService/Dockerfile
+          push: true
+          tags: ghcr.io/DiorDior-ctrl/kidsproject-lessonservice:latest
+
+      - name: Build and Push ProgressService
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          dockerfile: ProgressService.API/Dockerfile
+          push: true
+          tags: ghcr.io/DiorDior-ctrl/kidsproject-progressservice:latest
+
+      - name: Build and Push GamificationService
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          dockerfile: GamificationService.API/Dockerfile
+          push: true
+          tags: ghcr.io/DiorDior-ctrl/kidsproject-gamificationservice:latest
+
+      - name: Build and Push NotificationService
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          dockerfile: NotificationService.API/Dockerfile
+          push: true
+          tags: ghcr.io/DiorDior-ctrl/kidsproject-notificationservice:latest
+
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v3
+
+      - name: Setup Helm
+        uses: azure/setup-helm@v3
+
+      - name: Configure kubeconfig
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
+
+      - name: Deploy with Helm
+        run: |
+          helm upgrade --install kidsproject helm/kidsproject \
+            --namespace project-11 \
+            --set keycloak.clientSecret=${{ secrets.KEYCLOAK_CLIENT_SECRET }} \
+            --set postgresql.password=${{ secrets.POSTGRESQL_PASSWORD }} \
+            --wait --timeout 5m

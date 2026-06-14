@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: userservice
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: {{ .Values.userservice.replicas }}
+  selector:
+    matchLabels:
+      app: userservice
+  template:
+    metadata:
+      labels:
+        app: userservice
+    spec:
+      containers:
+      - name: userservice
+        image: {{ .Values.userservice.image }}
+        imagePullPolicy: {{ .Values.images.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.userservice.port }}
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Production"
+        - name: ConnectionStrings__UserServiceDb
+          value: "Host={{ .Values.postgresql.host }};Port={{ .Values.postgresql.port }};Database=userservice_db;Username={{ .Values.postgresql.username }};Ssl Mode=Disable;"
+        - name: Keycloak__Authority
+          value: "{{ .Values.keycloak.url }}/realms/{{ .Values.keycloak.realm }}"
+        - name: Keycloak__AdminUrl
+          value: "{{ .Values.keycloak.url }}"
+        - name: Keycloak__Realm
+          value: "{{ .Values.keycloak.realm }}"
+        - name: Keycloak__ClientId
+          value: "{{ .Values.keycloak.clientId }}"
+        - name: Keycloak__ClientSecret
+          valueFrom:
+            secretKeyRef:
+              name: kidsproject-secrets
+              key: keycloak-client-secret
+        - name: Keycloak__Audience
+          value: "account"
+        - name: Keycloak__RequireHttpsMetadata
+          value: "false"
+        - name: Redis__ConnectionString
+          value: "{{ .Values.redis.host }}:{{ .Values.redis.port }}"
+        resources:
+          requests:
+            memory: {{ .Values.userservice.resources.requests.memory }}
+            cpu: {{ .Values.userservice.resources.requests.cpu }}
+          limits:
+            memory: {{ .Values.userservice.resources.limits.memory }}
+            cpu: {{ .Values.userservice.resources.limits.cpu }}
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: {{ .Values.userservice.port }}
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: {{ .Values.userservice.port }}
+          initialDelaySeconds: 15
+          periodSeconds: 5
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: userservice
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    app: userservice
+  ports:
+  - port: 80
+    targetPort: {{ .Values.userservice.port }}
+  type: ClusterIP

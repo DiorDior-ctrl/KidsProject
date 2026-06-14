@@ -140,6 +140,9 @@ builder.Services.AddControllers()
     });
 
 builder.Services.AddOpenApi();
+// HEALTH CHECK
+builder.Services.AddHealthChecks();
+
 
 var app = builder.Build();
 
@@ -178,5 +181,6 @@ RecurringJob.AddOrUpdate<ProcessPendingNotificationsJob>(
     "*/5 * * * *");
 app.UseRateLimiter();
 app.MapControllers();
+app.MapHealthChecks("/health");
 
 await app.RunAsync();
