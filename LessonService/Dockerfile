@@ -9,6 +9,7 @@ COPY ["LessonService/LessonService.API.csproj", "LessonService/"]
 COPY ["LessonService.Application/LessonService.Application.csproj", "LessonService.Application/"]
 COPY ["LessonService.Domain/LessonService.Domain.csproj", "LessonService.Domain/"]
 COPY ["LessonService.Infrastructure/LessonService.Infrastructure.csproj", "LessonService.Infrastructure/"]
+COPY ["SharedKernel/SharedKernel.csproj", "SharedKernel/"]
 
 RUN dotnet restore "LessonService/LessonService.API.csproj"
 
@@ -16,6 +17,7 @@ COPY LessonService/ LessonService/
 COPY LessonService.Application/ LessonService.Application/
 COPY LessonService.Domain/ LessonService.Domain/
 COPY LessonService.Infrastructure/ LessonService.Infrastructure/
+COPY SharedKernel/ SharedKernel/
 
 WORKDIR "/src/LessonService"
 RUN dotnet build "LessonService.API.csproj" -c Release -o /app/build

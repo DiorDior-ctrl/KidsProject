@@ -9,6 +9,7 @@ COPY ["NotificationService.API/NotificationService.API.csproj", "NotificationSer
 COPY ["NotificationService.Application/NotificationService.Application.csproj", "NotificationService.Application/"]
 COPY ["NotificationService.Domain/NotificationService.Domain.csproj", "NotificationService.Domain/"]
 COPY ["NotificationService.Infrastructure/NotificationService.Infrastructure.csproj", "NotificationService.Infrastructure/"]
+COPY ["SharedKernel/SharedKernel.csproj", "SharedKernel/"]
 
 RUN dotnet restore "NotificationService.API/NotificationService.API.csproj"
 
@@ -16,6 +17,7 @@ COPY NotificationService.API/ NotificationService.API/
 COPY NotificationService.Application/ NotificationService.Application/
 COPY NotificationService.Domain/ NotificationService.Domain/
 COPY NotificationService.Infrastructure/ NotificationService.Infrastructure/
+COPY SharedKernel/ SharedKernel/
 
 WORKDIR "/src/NotificationService.API"
 RUN dotnet build "NotificationService.API.csproj" -c Release -o /app/build

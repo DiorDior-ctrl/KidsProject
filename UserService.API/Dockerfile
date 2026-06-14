@@ -9,6 +9,7 @@ COPY ["UserService.API/UserService.API.csproj", "UserService.API/"]
 COPY ["UserService.Application/UserService.Application.csproj", "UserService.Application/"]
 COPY ["UserService.Domain/UserService.Domain.csproj", "UserService.Domain/"]
 COPY ["UserService.Infrastructure/UserService.Infrastructure.csproj", "UserService.Infrastructure/"]
+COPY ["SharedKernel/SharedKernel.csproj", "SharedKernel/"]
 
 RUN dotnet restore "UserService.API/UserService.API.csproj"
 
@@ -16,6 +17,7 @@ COPY UserService.API/ UserService.API/
 COPY UserService.Application/ UserService.Application/
 COPY UserService.Domain/ UserService.Domain/
 COPY UserService.Infrastructure/ UserService.Infrastructure/
+COPY SharedKernel/ SharedKernel/
 
 WORKDIR "/src/UserService.API"
 RUN dotnet build "UserService.API.csproj" -c Release -o /app/build

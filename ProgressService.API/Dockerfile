@@ -9,6 +9,7 @@ COPY ["ProgressService.API/ProgressService.API.csproj", "ProgressService.API/"]
 COPY ["ProgressService.Application/ProgressService.Application.csproj", "ProgressService.Application/"]
 COPY ["ProgressService.Domain/ProgressService.Domain.csproj", "ProgressService.Domain/"]
 COPY ["ProgressService.Infrastructure/ProgressService.Infrastructure.csproj", "ProgressService.Infrastructure/"]
+COPY ["SharedKernel/SharedKernel.csproj", "SharedKernel/"]
 
 RUN dotnet restore "ProgressService.API/ProgressService.API.csproj"
 
@@ -16,6 +17,7 @@ COPY ProgressService.API/ ProgressService.API/
 COPY ProgressService.Application/ ProgressService.Application/
 COPY ProgressService.Domain/ ProgressService.Domain/
 COPY ProgressService.Infrastructure/ ProgressService.Infrastructure/
+COPY SharedKernel/ SharedKernel/
 
 WORKDIR "/src/ProgressService.API"
 RUN dotnet build "ProgressService.API.csproj" -c Release -o /app/build

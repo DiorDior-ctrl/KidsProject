@@ -9,6 +9,7 @@ COPY ["GamificationService.API/GamificationService.API.csproj", "GamificationSer
 COPY ["GamificationService.Application/GamificationService.Application.csproj", "GamificationService.Application/"]
 COPY ["GamificationService.Domain/GamificationService.Domain.csproj", "GamificationService.Domain/"]
 COPY ["GamificationService.Infrastructure/GamificationService.Infrastructure.csproj", "GamificationService.Infrastructure/"]
+COPY ["SharedKernel/SharedKernel.csproj", "SharedKernel/"]
 
 RUN dotnet restore "GamificationService.API/GamificationService.API.csproj"
 
@@ -16,6 +17,7 @@ COPY GamificationService.API/ GamificationService.API/
 COPY GamificationService.Application/ GamificationService.Application/
 COPY GamificationService.Domain/ GamificationService.Domain/
 COPY GamificationService.Infrastructure/ GamificationService.Infrastructure/
+COPY SharedKernel/ SharedKernel/
 
 WORKDIR "/src/GamificationService.API"
 RUN dotnet build "GamificationService.API.csproj" -c Release -o /app/build
