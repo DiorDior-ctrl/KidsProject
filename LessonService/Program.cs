@@ -153,6 +153,9 @@ builder.Services.AddControllers()
     });
 
 builder.Services.AddOpenApi();
+// HEALTH CHECK
+builder.Services.AddHealthChecks();
+
 
 var app = builder.Build();
 
@@ -184,5 +187,5 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseRateLimiter();
 app.MapControllers();
-
+app.MapHealthChecks("/health");
 await app.RunAsync();
