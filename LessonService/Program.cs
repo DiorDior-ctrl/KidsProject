@@ -5,6 +5,7 @@ using LessonService.Application.Services;
 using LessonService.Application.Services.Interfaces;
 using LessonService.Application.Validators;
 using LessonService.Infrastructure.Data;
+using LessonService.Infrastructure.ExternalServices;
 using LessonService.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
@@ -69,6 +70,14 @@ builder.Services.AddScoped<IModuleRepository, ModuleRepository>();
 builder.Services.AddScoped<ILessonRepository, LessonRepository>();
 builder.Services.AddScoped<IExerciseRepository, ExerciseRepository>();
 builder.Services.AddScoped<ILessonVideoRepository, LessonVideoRepository>();
+
+// REDIS CACHE
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = builder.Configuration["Redis:ConnectionString"] ?? "localhost:6379";
+    options.InstanceName = "LessonService:";
+});
+builder.Services.AddScoped<ICacheService, RedisCacheService>();
 
 // VALIDATORS
 builder.Services.AddValidatorsFromAssemblyContaining<CreateCourseValidator>();

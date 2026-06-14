@@ -15,18 +15,21 @@ public class ProgressService : IProgressService
     private readonly IUserProgressRepository _progressRepository;
     private readonly ILessonServiceClient _lessonClient;
     private readonly ILogger<ProgressService> _logger;
+    private readonly IEventPublisher _eventPublisher;
 
     public ProgressService(
         ILessonSessionRepository sessionRepository,
         IExerciseAttemptRepository attemptRepository,
         IUserProgressRepository progressRepository,
         ILessonServiceClient lessonClient,
+        IEventPublisher eventPublisher,
         ILogger<ProgressService> logger)
     {
         _sessionRepository = sessionRepository;
         _attemptRepository = attemptRepository;
         _progressRepository = progressRepository;
         _lessonClient = lessonClient;
+        _eventPublisher = eventPublisher;
         _logger = logger;
     }
 
@@ -130,6 +133,15 @@ public class ProgressService : IProgressService
         if (isLastExercise)
         {
             session.Complete();
+            // Publiko event
+            await _eventPublisher.PublishAsync(new SharedKernel.Events.LessonCompletedEvent(
+                UserId: userId,
+                LessonId: session.LessonId,
+                SessionId: sessionId,
+                TotalXpEarned: session.TotalXpEarned,
+                UserEmail: "",
+                DisplayName: "",
+                CompletedAt: DateTime.UtcNow), cancellationToken);
 
             // Përditëso progresin e userit
             var userProgress = await _progressRepository.GetByUserIdAsync(userId, cancellationToken);

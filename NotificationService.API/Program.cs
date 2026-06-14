@@ -1,4 +1,5 @@
 using FluentValidation;
+using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using NotificationService.API.Middleware;
@@ -7,6 +8,7 @@ using NotificationService.Application.Services;
 using NotificationService.Application.Services.Interfaces;
 using NotificationService.Infrastructure.Data;
 using NotificationService.Infrastructure.ExternalServices;
+using NotificationService.Infrastructure.Messaging;
 using NotificationService.Infrastructure.Repositories;
 using Scalar.AspNetCore;
 using System.IdentityModel.Tokens.Jwt;
@@ -65,6 +67,22 @@ builder.Services.AddAuthorization(options =>
 // REPOSITORIES
 builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
 builder.Services.AddScoped<INotificationTemplateRepository, NotificationTemplateRepository>();
+
+// MASSTRANSIT — RabbitMQ
+builder.Services.AddMassTransit(x =>
+{
+    x.AddConsumer<LessonCompletedConsumer>();
+
+    x.UsingRabbitMq((context, cfg) =>
+    {
+        cfg.Host(builder.Configuration["RabbitMQ:Host"] ?? "localhost", h =>
+        {
+            h.Username(builder.Configuration["RabbitMQ:Username"] ?? "guest");
+            h.Password(builder.Configuration["RabbitMQ:Password"] ?? "guest");
+        });
+        cfg.ConfigureEndpoints(context);
+    });
+});
 
 // SERVICES
 builder.Services.AddScoped<IEmailService, EmailService>();

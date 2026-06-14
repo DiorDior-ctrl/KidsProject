@@ -5,6 +5,8 @@ using GamificationService.Application.Services;
 using GamificationService.Application.Services.Interfaces;
 using GamificationService.Infrastructure.Data;
 using GamificationService.Infrastructure.Repositories;
+using GamificationService.Infrastructure.Messaging;
+using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
@@ -66,6 +68,22 @@ builder.Services.AddScoped<IUserXpRepository, UserXpRepository>();
 builder.Services.AddScoped<IBadgeRepository, BadgeRepository>();
 builder.Services.AddScoped<IUserBadgeRepository, UserBadgeRepository>();
 builder.Services.AddScoped<ILeaderboardRepository, LeaderboardRepository>();
+
+// MASSTRANSIT — RabbitMQ
+builder.Services.AddMassTransit(x =>
+{
+    x.AddConsumer<LessonCompletedConsumer>();
+
+    x.UsingRabbitMq((context, cfg) =>
+    {
+        cfg.Host(builder.Configuration["RabbitMQ:Host"] ?? "localhost", h =>
+        {
+            h.Username(builder.Configuration["RabbitMQ:Username"] ?? "guest");
+            h.Password(builder.Configuration["RabbitMQ:Password"] ?? "guest");
+        });
+        cfg.ConfigureEndpoints(context);
+    });
+});
 
 // SERVICES
 builder.Services.AddScoped<IGamificationService, GamificationService.Application.Services.GamificationService>();

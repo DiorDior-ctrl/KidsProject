@@ -1,4 +1,5 @@
 using FluentValidation;
+using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using ProgressService.API.Middleware;
@@ -6,6 +7,7 @@ using ProgressService.Application.Repositories.Interfaces;
 using ProgressService.Application.Services.Interfaces;
 using ProgressService.Infrastructure.Data;
 using ProgressService.Infrastructure.ExternalServices;
+using ProgressService.Infrastructure.Messaging;
 using ProgressService.Infrastructure.Repositories;
 using Scalar.AspNetCore;
 using System.IdentityModel.Tokens.Jwt;
@@ -68,6 +70,21 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ILessonSessionRepository, LessonSessionRepository>();
 builder.Services.AddScoped<IExerciseAttemptRepository, ExerciseAttemptRepository>();
 builder.Services.AddScoped<IUserProgressRepository, UserProgressRepository>();
+
+// MASSTRANSIT — RabbitMQ
+builder.Services.AddMassTransit(x =>
+{
+    x.UsingRabbitMq((context, cfg) =>
+    {
+        cfg.Host(builder.Configuration["RabbitMQ:Host"] ?? "localhost", h =>
+        {
+            h.Username(builder.Configuration["RabbitMQ:Username"] ?? "guest");
+            h.Password(builder.Configuration["RabbitMQ:Password"] ?? "guest");
+        });
+        cfg.ConfigureEndpoints(context);
+    });
+});
+builder.Services.AddScoped<IEventPublisher, MassTransitEventPublisher>();
 
 // HTTP CLIENT — LessonService
 builder.Services.AddHttpClient<ILessonServiceClient, LessonServiceClient>();

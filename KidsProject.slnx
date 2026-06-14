@@ -36,5 +36,7 @@
     <Project Path="UserService.Infrastructure/UserService.Infrastructure.csproj" />
     <Project Path="UserService.Test/UserService.Test.csproj" />
   </Folder>
-  <Folder Name="/src/Shared/" />
+  <Folder Name="/src/Shared/">
+    <Project Path="SharedKernel/SharedKernel.csproj" Id="042fc30e-009d-4ee5-86c9-91fbb13b7879" />
+  </Folder>
 </Solution>
