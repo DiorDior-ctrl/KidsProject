@@ -1,8 +1,12 @@
 using FluentValidation;
+using Hangfire;
+using Hangfire;
+using Hangfire.PostgreSql;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
+using NotificationService.API.Jobs;
 using NotificationService.API.Middleware;
 using NotificationService.Application.Repositories.Interfaces;
 using NotificationService.Application.Services;
@@ -14,6 +18,7 @@ using NotificationService.Infrastructure.Repositories;
 using Scalar.AspNetCore;
 using SharedKernel.Logging;
 using System.IdentityModel.Tokens.Jwt;
+using NotificationService.API.Jobs;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.AddSerilog("NotificationService");
@@ -116,6 +121,17 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<INotificationService, NotificationService.Application.Services.NotificationService>();
 builder.Services.AddScoped<INotificationTemplateService, NotificationTemplateService>();
 
+// HANGFIRE 
+builder.Services.AddHangfire(config =>
+{
+    config.UsePostgreSqlStorage(options =>
+    {
+        options.UseNpgsqlConnection(
+            builder.Configuration.GetConnectionString("NotificationServiceDb"));
+    });
+});
+builder.Services.AddHangfireServer();
+
 // CONTROLLERS + OPENAPI
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
@@ -153,6 +169,13 @@ if (app.Environment.IsDevelopment())
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
+// HANGFIRE Dashboard
+app.UseHangfireDashboard("/hangfire");
+// Regjistro recurring job — çdo 5 minuta
+RecurringJob.AddOrUpdate<ProcessPendingNotificationsJob>(
+    "process-pending-notifications",
+    job => job.ExecuteAsync(),
+    "*/5 * * * *");
 app.UseRateLimiter();
 app.MapControllers();
 
