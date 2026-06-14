@@ -1,16 +1,54 @@
 services:
+
+  # INFRASTRUCTURE
+
   postgres:
     image: postgres:16
     container_name: kidsproject-postgres
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: kidsproject
-      POSTGRES_DB: userservice_db
       POSTGRES_HOST_AUTH_METHOD: trust
     ports:
       - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./docker/init-databases.sql:/docker-entrypoint-initdb.d/init-databases.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: kidsproject-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: kidsproject-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   keycloak:
     image: quay.io/keycloak/keycloak:24.0
@@ -22,5 +60,125 @@ services:
     ports:
       - "8080:8080"
 
+  minio:
+    image: minio/minio
+    container_name: kidsproject-minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # SERVICES
+
+  userservice:
+    build:
+      context: .
+      dockerfile: UserService.API/Dockerfile
+    container_name: kidsproject-userservice
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__UserServiceDb=Host=postgres;Port=5432;Database=userservice_db;Username=postgres;Ssl Mode=Disable;
+      - Keycloak__Authority=http://keycloak:8080/realms/kidsproject
+      - Keycloak__AdminUrl=http://keycloak:8080
+      - Keycloak__Realm=kidsproject
+      - Keycloak__ClientId=userservice-client
+      - Keycloak__ClientSecret=your-client-secret
+      - Keycloak__AdminUsername=admin
+      - Keycloak__AdminPassword=admin
+      - Keycloak__Audience=account
+      - Keycloak__RequireHttpsMetadata=false
+      - Redis__ConnectionString=redis:6379
+    ports:
+      - "5220:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  lessonservice:
+    build:
+      context: .
+      dockerfile: LessonService/Dockerfile
+    container_name: kidsproject-lessonservice
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__LessonServiceDb=Host=postgres;Port=5432;Database=lessonservice_db;Username=postgres;Ssl Mode=Disable;
+      - Keycloak__Authority=http://keycloak:8080/realms/kidsproject
+      - Keycloak__Audience=account
+      - Keycloak__RequireHttpsMetadata=false
+    ports:
+      - "5001:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  progressservice:
+    build:
+      context: .
+      dockerfile: ProgressService.API/Dockerfile
+    container_name: kidsproject-progressservice
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__ProgressServiceDb=Host=postgres;Port=5432;Database=progressservice_db;Username=postgres;Ssl Mode=Disable;
+      - Keycloak__Authority=http://keycloak:8080/realms/kidsproject
+      - Keycloak__Audience=account
+      - Keycloak__RequireHttpsMetadata=false
+      - LessonService__BaseUrl=http://lessonservice:8080
+    ports:
+      - "5139:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      lessonservice:
+        condition: service_started
+
+  gamificationservice:
+    build:
+      context: .
+      dockerfile: GamificationService.API/Dockerfile
+    container_name: kidsproject-gamificationservice
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__GamificationServiceDb=Host=postgres;Port=5432;Database=gamificationservice_db;Username=postgres;Ssl Mode=Disable;
+      - Keycloak__Authority=http://keycloak:8080/realms/kidsproject
+      - Keycloak__Audience=account
+      - Keycloak__RequireHttpsMetadata=false
+    ports:
+      - "5149:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  notificationservice:
+    build:
+      context: .
+      dockerfile: NotificationService.API/Dockerfile
+    container_name: kidsproject-notificationservice
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__NotificationServiceDb=Host=postgres;Port=5432;Database=notificationservice_db;Username=postgres;Ssl Mode=Disable;
+      - Keycloak__Authority=http://keycloak:8080/realms/kidsproject
+      - Keycloak__Audience=account
+      - Keycloak__RequireHttpsMetadata=false
+    ports:
+      - "5216:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
 volumes:
   postgres_data:
+  redis_data:
+  rabbitmq_data:
+  minio_data:
