@@ -12,9 +12,10 @@ using NotificationService.Infrastructure.Messaging;
 using NotificationService.Infrastructure.Repositories;
 using Scalar.AspNetCore;
 using System.IdentityModel.Tokens.Jwt;
+using SharedKernel.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
-
+builder.AddSerilog("NotificationService");
 // CLEAR DEFAULT CLAIM MAPPINGS
 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 

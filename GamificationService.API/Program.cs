@@ -11,9 +11,10 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 using System.IdentityModel.Tokens.Jwt;
+using SharedKernel.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
-
+builder.AddSerilog("GamificationService");
 // CLEAR DEFAULT CLAIM MAPPINGS
 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 

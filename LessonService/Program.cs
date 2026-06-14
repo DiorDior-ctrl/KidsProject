@@ -11,10 +11,13 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
+using SharedKernel.Logging;
 using System.IdentityModel.Tokens.Jwt;
+using SharedKernel.Logging;
+
 
 var builder = WebApplication.CreateBuilder(args);
-
+builder.AddSerilog("LessonService");
 // CLEAR DEFAULT CLAIM MAPPINGS
 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 

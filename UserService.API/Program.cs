@@ -11,8 +11,10 @@ using UserService.Application.Validators;
 using UserService.Infrastructure.Data;
 using UserService.Infrastructure.ExternalServices;
 using UserService.Infrastructure.Repositories;
+using SharedKernel.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.AddSerilog("UserService");
 
 // CLEAR DEFAULT CLAIM MAPPINGS — lexo rolet saktë nga Keycloak
 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();

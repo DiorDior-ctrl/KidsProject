@@ -57,8 +57,15 @@ services:
     environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak_db
+      KC_DB_USERNAME: postgres
+      KC_DB_PASSWORD: kidsproject
     ports:
       - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
 
   minio:
     image: minio/minio
@@ -77,6 +84,27 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+  loki:
+    image: grafana/loki:3.0.0
+    container_name: kidsproject-loki
+    ports:
+      - "3100:3100"
+    volumes:
+      - loki_data:/loki
+    command: -config.file=/etc/loki/local-config.yaml
+
+  grafana:
+    image: grafana/grafana:11.0.0
+    container_name: kidsproject-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+    depends_on:
+      - loki
 
   # SERVICES
 
@@ -98,6 +126,7 @@ services:
       - Keycloak__Audience=account
       - Keycloak__RequireHttpsMetadata=false
       - Redis__ConnectionString=redis:6379
+      - Loki__Url=http://loki:3100
     ports:
       - "5220:8080"
     depends_on:
@@ -117,6 +146,8 @@ services:
       - Keycloak__Authority=http://keycloak:8080/realms/kidsproject
       - Keycloak__Audience=account
       - Keycloak__RequireHttpsMetadata=false
+      - Redis__ConnectionString=redis:6379
+      - Loki__Url=http://loki:3100
     ports:
       - "5001:8080"
     depends_on:
@@ -135,6 +166,8 @@ services:
       - Keycloak__Audience=account
       - Keycloak__RequireHttpsMetadata=false
       - LessonService__BaseUrl=http://lessonservice:8080
+      - RabbitMQ__Host=rabbitmq
+      - Loki__Url=http://loki:3100
     ports:
       - "5139:8080"
     depends_on:
@@ -142,6 +175,8 @@ services:
         condition: service_healthy
       lessonservice:
         condition: service_started
+      rabbitmq:
+        condition: service_healthy
 
   gamificationservice:
     build:
@@ -154,10 +189,14 @@ services:
       - Keycloak__Authority=http://keycloak:8080/realms/kidsproject
       - Keycloak__Audience=account
       - Keycloak__RequireHttpsMetadata=false
+      - RabbitMQ__Host=rabbitmq
+      - Loki__Url=http://loki:3100
     ports:
       - "5149:8080"
     depends_on:
       postgres:
+        condition: service_healthy
+      rabbitmq:
         condition: service_healthy
 
   notificationservice:
@@ -171,10 +210,14 @@ services:
       - Keycloak__Authority=http://keycloak:8080/realms/kidsproject
       - Keycloak__Audience=account
       - Keycloak__RequireHttpsMetadata=false
+      - RabbitMQ__Host=rabbitmq
+      - Loki__Url=http://loki:3100
     ports:
       - "5216:8080"
     depends_on:
       postgres:
+        condition: service_healthy
+      rabbitmq:
         condition: service_healthy
 
 volumes:
@@ -182,3 +225,5 @@ volumes:
   redis_data:
   rabbitmq_data:
   minio_data:
+  loki_data:
+  grafana_data:

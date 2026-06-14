@@ -11,9 +11,11 @@ using ProgressService.Infrastructure.Messaging;
 using ProgressService.Infrastructure.Repositories;
 using Scalar.AspNetCore;
 using System.IdentityModel.Tokens.Jwt;
+using SharedKernel.Logging;
+
 
 var builder = WebApplication.CreateBuilder(args);
-
+builder.AddSerilog("ProgressService");
 // CLEAR DEFAULT CLAIM MAPPINGS
 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
