@@ -11,11 +11,13 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
+using Minio;
 using Scalar.AspNetCore;
 using SharedKernel.Logging;
 using SharedKernel.Logging;
 using System.IdentityModel.Tokens.Jwt;
-
+using LessonService.Infrastructure.ExternalServices;
+using Minio;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.AddSerilog("LessonService");
@@ -99,6 +101,17 @@ builder.Services.AddScoped<IModuleRepository, ModuleRepository>();
 builder.Services.AddScoped<ILessonRepository, LessonRepository>();
 builder.Services.AddScoped<IExerciseRepository, ExerciseRepository>();
 builder.Services.AddScoped<ILessonVideoRepository, LessonVideoRepository>();
+
+// MINIO — BE-11
+builder.Services.AddMinio(configureClient => configureClient
+    .WithEndpoint(builder.Configuration["MinIO:Endpoint"] ?? "localhost:9000")
+    .WithCredentials(
+        builder.Configuration["MinIO:AccessKey"] ?? "minioadmin",
+        builder.Configuration["MinIO:SecretKey"] ?? "minioadmin")
+    .WithSSL(false)
+    .Build());
+
+builder.Services.AddScoped<IStorageService, MinioStorageService>();
 
 // REDIS CACHE
 builder.Services.AddStackExchangeRedisCache(options =>
