@@ -39,6 +39,7 @@ namespace UserService.Domain.Models
             {
                 Id = Guid.NewGuid(),
                 KeycloakId = keycloakId,
+                Email = email.ToLowerInvariant().Trim(),
                 Role = UserRole.Child,
                 CreatedAt = DateTime.UtcNow,
                 IsActive = true
