@@ -1,12 +1,14 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using LessonService.Application.DTOs.Requests;
+﻿using LessonService.Application.DTOs.Requests;
 using LessonService.Application.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 namespace LessonService.API.Controllers
 {
     [ApiController]
     [Route("api/v1/modules")]
     [Authorize]
+    [EnableRateLimiting("GeneralPolicy")]
     public class ModuleController : ControllerBase
     {
         private readonly IModuleService _moduleService;

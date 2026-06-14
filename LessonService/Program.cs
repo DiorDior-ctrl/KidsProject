@@ -9,11 +9,12 @@ using LessonService.Infrastructure.ExternalServices;
 using LessonService.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 using SharedKernel.Logging;
-using System.IdentityModel.Tokens.Jwt;
 using SharedKernel.Logging;
+using System.IdentityModel.Tokens.Jwt;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -65,6 +66,31 @@ builder.Services.AddAuthorization(options =>
 
     options.AddPolicy("ParentOrAdmin", policy =>
         policy.RequireRole("Parent", "Admin"));
+});
+
+// RATE LIMITING 
+builder.Services.AddRateLimiter(options =>
+{
+    // Policy e përgjithshme — 100 request në minutë për çdo IP
+    options.AddFixedWindowLimiter("GeneralPolicy", opt =>
+    {
+        opt.Window = TimeSpan.FromMinutes(1);
+        opt.PermitLimit = 100;
+        opt.QueueLimit = 0;
+        opt.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
+    });
+
+    // Policy për Auth endpoints — 10 login attempts në minutë
+    options.AddFixedWindowLimiter("AuthPolicy", opt =>
+    {
+        opt.Window = TimeSpan.FromMinutes(1);
+        opt.PermitLimit = 10;
+        opt.QueueLimit = 0;
+        opt.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
+    });
+
+    // Ktheje 429 Too Many Requests
+    options.RejectionStatusCode = 429;
 });
 
 // REPOSITORIES
@@ -139,6 +165,7 @@ if (app.Environment.IsDevelopment())
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseRateLimiter();
 app.MapControllers();
 
 await app.RunAsync();

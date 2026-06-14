@@ -2,12 +2,14 @@
 using Microsoft.AspNetCore.Mvc;
 using LessonService.Application.DTOs.Requests;
 using LessonService.Application.Services.Interfaces;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace LessonService.API.Controllers
 {
     [ApiController]
     [Route("api/v1/courses")]
     [Authorize]
+    [EnableRateLimiting("GeneralPolicy")]
     public class CourseController : ControllerBase
     {
         private readonly ICourseService _courseService;
