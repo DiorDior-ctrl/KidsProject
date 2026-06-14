@@ -129,6 +129,8 @@ builder.Services.AddScoped<ICourseService, CourseService>();
 builder.Services.AddScoped<IModuleService, ModuleService>();
 builder.Services.AddScoped<ILessonService, LessonService.Application.Services.LessonService>();
 builder.Services.AddScoped<IExerciseService, ExerciseService>();
+// SEMANTIC SEARCH — BE-17
+builder.Services.AddScoped<ISemanticSearchService, SemanticSearchService>();
 // ANTHROPIC AI — BE-18
 builder.Services.AddScoped<IAiExerciseService, AnthropicExerciseService>();
 

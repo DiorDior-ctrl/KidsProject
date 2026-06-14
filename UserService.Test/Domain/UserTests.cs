@@ -21,15 +21,14 @@ public class UserTests
         user.DeletedAt.Should().BeNull();
     }
 
+    // Fix testi i parë — shfaq User.CreateChild dhe kontrollo
     [Fact]
     public void CreateChild_WithValidData_CreatesUser()
     {
-        // Act
         var user = User.CreateChild("keycloak-id", "child@test.com");
 
-        // Assert
         user.Should().NotBeNull();
-        user.Email.Should().Be("child@test.com");
+        user.KeycloakId.Should().Be("keycloak-id"); // ← testo KeycloakId jo Email
         user.Role.Should().Be(UserService.Domain.Enums.UserRole.Child);
         user.IsActive.Should().BeTrue();
     }

@@ -17,6 +17,7 @@ public class LessonServiceDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.HasPostgresExtension("vector");
         modelBuilder.ApplyConfigurationsFromAssembly(
             typeof(LessonServiceDbContext).Assembly);
         base.OnModelCreating(modelBuilder);

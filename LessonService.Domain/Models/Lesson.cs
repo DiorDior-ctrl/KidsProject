@@ -17,7 +17,7 @@ namespace LessonService.Domain.Models
         public DateTime CreatedAt   { get; private set; }
         public DateTime? DeletedAt { get; private set; }
         public LessonVideo? Video { get; private set; }
-
+        public float[]? Embedding { get; private set; }
 
         public Module Module { get; private set; } = null!;
         public ICollection<Exercise> Exercises { get; private set; } = new List<Exercise>();
@@ -63,7 +63,10 @@ namespace LessonService.Domain.Models
             OrderIndex = orderindex;
             XpReward = xps;
         }
-
+        public void SetEmbedding(float[] embedding)
+        {
+            Embedding = embedding;
+        }
         public void SoftDelete()
         {
             IsActive = false;

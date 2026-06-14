@@ -51,6 +51,11 @@ public class LessonConfiguration : IEntityTypeConfiguration<Lesson>
             .HasColumnName("deleted_at")
             .IsRequired(false);
 
+        builder.Property(l => l.Embedding)
+        .HasColumnName("embedding")
+        .HasColumnType("vector(1536)")
+        .IsRequired(false);
+
         builder.HasQueryFilter(l => l.DeletedAt == null);
 
         builder.HasIndex(l => new { l.ModuleId, l.OrderIndex })
