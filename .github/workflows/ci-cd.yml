@@ -8,7 +8,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  GITHUB_USERNAME: DiorDior-ctrl
+  GITHUB_USERNAME: diordior-ctrl
 
 jobs:
   build-and-push:
@@ -34,7 +34,7 @@ jobs:
           context: .
           dockerfile: UserService.API/Dockerfile
           push: true
-          tags: ghcr.io/DiorDior-ctrl/kidsproject-userservice:latest
+          tags: ghcr.io/diordior-ctrl/kidsproject-userservice:latest
 
       - name: Build and Push LessonService
         uses: docker/build-push-action@v5
@@ -42,7 +42,7 @@ jobs:
           context: .
           dockerfile: LessonService/Dockerfile
           push: true
-          tags: ghcr.io/DiorDior-ctrl/kidsproject-lessonservice:latest
+          tags: ghcr.io/diordior-ctrl/kidsproject-lessonservice:latest
 
       - name: Build and Push ProgressService
         uses: docker/build-push-action@v5
@@ -50,7 +50,7 @@ jobs:
           context: .
           dockerfile: ProgressService.API/Dockerfile
           push: true
-          tags: ghcr.io/DiorDior-ctrl/kidsproject-progressservice:latest
+          tags: ghcr.io/diordior-ctrl/kidsproject-progressservice:latest
 
       - name: Build and Push GamificationService
         uses: docker/build-push-action@v5
@@ -58,7 +58,7 @@ jobs:
           context: .
           dockerfile: GamificationService.API/Dockerfile
           push: true
-          tags: ghcr.io/DiorDior-ctrl/kidsproject-gamificationservice:latest
+          tags: ghcr.io/diordior-ctrl/kidsproject-gamificationservice:latest
 
       - name: Build and Push NotificationService
         uses: docker/build-push-action@v5
@@ -66,7 +66,7 @@ jobs:
           context: .
           dockerfile: NotificationService.API/Dockerfile
           push: true
-          tags: ghcr.io/DiorDior-ctrl/kidsproject-notificationservice:latest
+          tags: ghcr.io/diordior-ctrl/kidsproject-notificationservice:latest
 
   deploy:
     needs: build-and-push

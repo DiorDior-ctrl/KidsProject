@@ -5,7 +5,7 @@ images:
   pullPolicy: Always
 
 userservice:
-  image: ghcr.io/DiorDior-ctrl/kidsproject-userservice:latest
+  image: ghcr.io/diordior-ctrl/kidsproject-userservice:latest
   replicas: 1
   port: 8080
   resources:
@@ -17,7 +17,7 @@ userservice:
       cpu: "200m"
 
 lessonservice:
-  image: ghcr.io/DiorDior-ctrl/kidsproject-lessonservice:latest
+  image: ghcr.io/diordior-ctrl/kidsproject-lessonservice:latest
   replicas: 1
   port: 8080
   resources:
@@ -29,7 +29,7 @@ lessonservice:
       cpu: "200m"
 
 progressservice:
-  image: ghcr.io/DiorDior-ctrl/kidsproject-progressservice:latest
+  image: ghcr.io/diordior-ctrl/kidsproject-progressservice:latest
   replicas: 1
   port: 8080
   resources:
@@ -41,7 +41,7 @@ progressservice:
       cpu: "200m"
 
 gamificationservice:
-  image: ghcr.io/DiorDior-ctrl/kidsproject-gamificationservice:latest
+  image: ghcr.io/diordior-ctrl/kidsproject-gamificationservice:latest
   replicas: 1
   port: 8080
   resources:
@@ -53,7 +53,7 @@ gamificationservice:
       cpu: "200m"
 
 notificationservice:
-  image: ghcr.io/DiorDior-ctrl/kidsproject-notificationservice:latest
+  image: ghcr.io/diordior-ctrl/kidsproject-notificationservice:latest
   replicas: 1
   port: 8080
   resources:
