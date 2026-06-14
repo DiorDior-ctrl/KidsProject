@@ -13,6 +13,8 @@ spec:
       labels:
         app: lessonservice
     spec:
+      imagePullSecrets:
+      - name: ghcr-secret
       containers:
       - name: lessonservice
         image: {{ .Values.lessonservice.image }}

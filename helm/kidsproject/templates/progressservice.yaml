@@ -13,6 +13,8 @@ spec:
       labels:
         app: progressservice
     spec:
+      imagePullSecrets:
+      - name: ghcr-secret
       containers:
       - name: progressservice
         image: {{ .Values.progressservice.image }}

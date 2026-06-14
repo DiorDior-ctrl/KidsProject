@@ -13,6 +13,8 @@ spec:
       labels:
         app: notificationservice
     spec:
+      imagePullSecrets:
+      - name: ghcr-secret
       containers:
       - name: notificationservice
         image: {{ .Values.notificationservice.image }}
