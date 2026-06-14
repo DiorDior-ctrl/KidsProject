@@ -1,14 +1,16 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using ProgressService.Application.DTOs.Requests;
 using ProgressService.Application.Services.Interfaces;
 using System.Security.Claims;
-
+using Microsoft.AspNetCore.RateLimiting;
 namespace ProgressService.API.Controllers
 {
     [ApiController]
     [Route("api/v1/progress")]
     [Authorize]
+    [EnableRateLimiting("GeneralPolicy")]
     public class ProgressController : ControllerBase
     {
         private readonly IProgressService progress;

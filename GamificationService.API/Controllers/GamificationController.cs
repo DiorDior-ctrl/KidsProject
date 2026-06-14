@@ -3,12 +3,13 @@ using GamificationService.Application.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-
+using Microsoft.AspNetCore.RateLimiting;
 namespace GamificationService.API.Controllers
 {
     [ApiController]
     [Route("api/v1/gamification")]
     [Authorize]
+    [EnableRateLimiting("GeneralPolicy")]
     public class GamificationController : ControllerBase
     {
         private readonly IGamificationService _gamificationService;

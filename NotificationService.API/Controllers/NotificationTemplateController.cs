@@ -3,12 +3,13 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NotificationService.Application.DTOs.Requests;
 using NotificationService.Application.Services.Interfaces;
-
+using Microsoft.AspNetCore.RateLimiting;
 namespace NotificationService.API.Controllers;
 
 [ApiController]
 [Route("api/v1/notification-templates")]
 [Authorize(Policy = "AdminOnly")]
+[EnableRateLimiting("GeneralPolicy")]
 public class NotificationTemplateController : ControllerBase
 {
     private readonly INotificationTemplateService _templateService;

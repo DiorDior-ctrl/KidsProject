@@ -1,6 +1,7 @@
 using FluentValidation;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using NotificationService.API.Middleware;
 using NotificationService.Application.Repositories.Interfaces;
@@ -11,8 +12,8 @@ using NotificationService.Infrastructure.ExternalServices;
 using NotificationService.Infrastructure.Messaging;
 using NotificationService.Infrastructure.Repositories;
 using Scalar.AspNetCore;
-using System.IdentityModel.Tokens.Jwt;
 using SharedKernel.Logging;
+using System.IdentityModel.Tokens.Jwt;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.AddSerilog("NotificationService");
@@ -63,6 +64,31 @@ builder.Services.AddAuthorization(options =>
 
     options.AddPolicy("ParentOrAdmin", policy =>
         policy.RequireRole("Parent", "Admin"));
+});
+
+// RATE LIMITING 
+builder.Services.AddRateLimiter(options =>
+{
+    // Policy e përgjithshme — 100 request në minutë për çdo IP
+    options.AddFixedWindowLimiter("GeneralPolicy", opt =>
+    {
+        opt.Window = TimeSpan.FromMinutes(1);
+        opt.PermitLimit = 100;
+        opt.QueueLimit = 0;
+        opt.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
+    });
+
+    // Policy për Auth endpoints — 10 login attempts në minutë
+    options.AddFixedWindowLimiter("AuthPolicy", opt =>
+    {
+        opt.Window = TimeSpan.FromMinutes(1);
+        opt.PermitLimit = 10;
+        opt.QueueLimit = 0;
+        opt.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
+    });
+
+    // Ktheje 429 Too Many Requests
+    options.RejectionStatusCode = 429;
 });
 
 // REPOSITORIES
@@ -127,6 +153,7 @@ if (app.Environment.IsDevelopment())
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseRateLimiter();
 app.MapControllers();
 
 await app.RunAsync();

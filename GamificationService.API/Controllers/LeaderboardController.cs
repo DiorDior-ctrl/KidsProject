@@ -3,12 +3,15 @@ using GamificationService.Application.Services.Interfaces;
 using GamificationService.Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace GamificationService.API.Controllers;
 
 [ApiController]
 [Route("api/v1/leaderboard")]
 [Authorize]
+[EnableRateLimiting("GeneralPolicy")]
 public class LeaderboardController : ControllerBase
 {
     private readonly ILeaderboardService _leaderboardService;

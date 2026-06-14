@@ -1,17 +1,22 @@
 using FluentValidation;
+using GamificationService.API.Hubs;
 using GamificationService.API.Middleware;
+using GamificationService.API.Services;
 using GamificationService.Application.Repositories.Interfaces;
 using GamificationService.Application.Services;
 using GamificationService.Application.Services.Interfaces;
 using GamificationService.Infrastructure.Data;
-using GamificationService.Infrastructure.Repositories;
 using GamificationService.Infrastructure.Messaging;
+using GamificationService.Infrastructure.Repositories;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
-using System.IdentityModel.Tokens.Jwt;
 using SharedKernel.Logging;
+using StackExchange.Redis;
+using System.IdentityModel.Tokens.Jwt;
+
 
 var builder = WebApplication.CreateBuilder(args);
 builder.AddSerilog("GamificationService");
@@ -64,6 +69,31 @@ builder.Services.AddAuthorization(options =>
         policy.RequireRole("Parent", "Admin"));
 });
 
+// RATE LIMITING 
+builder.Services.AddRateLimiter(options =>
+{
+    // Policy e përgjithshme — 100 request në minutë për çdo IP
+    options.AddFixedWindowLimiter("GeneralPolicy", opt =>
+    {
+        opt.Window = TimeSpan.FromMinutes(1);
+        opt.PermitLimit = 100;
+        opt.QueueLimit = 0;
+        opt.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
+    });
+
+    // Policy për Auth endpoints — 10 login attempts në minutë
+    options.AddFixedWindowLimiter("AuthPolicy", opt =>
+    {
+        opt.Window = TimeSpan.FromMinutes(1);
+        opt.PermitLimit = 10;
+        opt.QueueLimit = 0;
+        opt.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
+    });
+
+    // Ktheje 429 Too Many Requests
+    options.RejectionStatusCode = 429;
+});
+
 // REPOSITORIES
 builder.Services.AddScoped<IUserXpRepository, UserXpRepository>();
 builder.Services.AddScoped<IBadgeRepository, BadgeRepository>();
@@ -90,6 +120,18 @@ builder.Services.AddMassTransit(x =>
 builder.Services.AddScoped<IGamificationService, GamificationService.Application.Services.GamificationService>();
 builder.Services.AddScoped<IBadgeService, BadgeService>();
 builder.Services.AddScoped<ILeaderboardService, LeaderboardService>();
+
+// SIGNALR 
+builder.Services.AddSignalR()
+    .AddStackExchangeRedis(
+        builder.Configuration["Redis:ConnectionString"] ?? "localhost:6379",
+        options =>
+        {
+            options.Configuration.ChannelPrefix =
+                RedisChannel.Literal("GamificationService");
+        });
+
+builder.Services.AddScoped<IRealtimeNotificationService, SignalRNotificationService>();
 
 // CONTROLLERS + OPENAPI
 builder.Services.AddControllers()
@@ -128,6 +170,8 @@ if (app.Environment.IsDevelopment())
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseRateLimiter();
 app.MapControllers();
+app.MapHub<GamificationHub>("/hubs/gamification");
 
 await app.RunAsync();

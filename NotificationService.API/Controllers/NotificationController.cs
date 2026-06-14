@@ -1,14 +1,16 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using NotificationService.Application.DTOs.Requests;
 using NotificationService.Application.Services.Interfaces;
 using System.Security.Claims;
-
+using Microsoft.AspNetCore.RateLimiting;
 namespace NotificationService.API.Controllers
 {
     [ApiController]
     [Route("api/v1/notifications")]
     [Authorize]
+    [EnableRateLimiting("GeneralPolicy")]
     public class NotificationController : ControllerBase
     {
         private readonly INotificationService _notificationService;

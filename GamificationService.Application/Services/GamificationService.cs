@@ -14,16 +14,19 @@ public class GamificationService : IGamificationService
     private readonly IUserBadgeRepository _userBadgeRepository;
     private readonly IBadgeRepository _badgeRepository;
     private readonly ILogger<GamificationService> _logger;
+    private readonly IRealtimeNotificationService _realtimeService;
 
     public GamificationService(
         IUserXpRepository userXpRepository,
         IUserBadgeRepository userBadgeRepository,
         IBadgeRepository badgeRepository,
+        IRealtimeNotificationService realtimeService,
         ILogger<GamificationService> logger)
     {
         _userXpRepository = userXpRepository;
         _userBadgeRepository = userBadgeRepository;
         _badgeRepository = badgeRepository;
+        _realtimeService = realtimeService;
         _logger = logger;
     }
 
@@ -60,6 +63,9 @@ public class GamificationService : IGamificationService
             userXp.AddXp(request.Xp);
             userXp.UpdatedStreak();
             await _userXpRepository.UpdateAsync(userXp, cancellationToken);
+            // Dërgo real-time notification
+            await _realtimeService.SendXpUpdateAsync(
+                request.UserId, userXp.TotalXp, request.Xp, cancellationToken);
         }
 
         _logger.LogInformation("XP u shtua për userin {UserId}: +{Xp}", request.UserId, request.Xp);
@@ -108,6 +114,8 @@ public class GamificationService : IGamificationService
             {
                 var userBadge = UserBadge.Create(userId, badge.id);
                 await _userBadgeRepository.AddAsync(userBadge, cancellationToken);
+                await _realtimeService.SendBadgeEarnedAsync(
+                    userId, badge.Name, badge.IconURL, cancellationToken);
                 _logger.LogInformation("Badge u fitua: {BadgeName} nga useri {UserId}", badge.Name, userId);
             }
         }

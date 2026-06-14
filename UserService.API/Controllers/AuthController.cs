@@ -1,10 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using UserService.Application.DTOs.Requests;
 using UserService.Application.Services.Interfaces;
+using Microsoft.AspNetCore.RateLimiting;
 namespace UserService.API.Controllers;
+
 
 [ApiController]
 [Route("api/v1/auth")]
+[EnableRateLimiting("AuthPolicy")]
 public class AuthController : ControllerBase
 {
     private readonly IUserService _userService;

@@ -3,12 +3,15 @@ using GamificationService.Application.DTOs.Requests;
 using GamificationService.Application.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace GamificationService.API.Controllers;
 
 [ApiController]
 [Route("api/v1/badges")]
 [Authorize]
+[EnableRateLimiting("GeneralPolicy")]
 public class BadgeController : ControllerBase
 {
     private readonly IBadgeService _badgeService;
