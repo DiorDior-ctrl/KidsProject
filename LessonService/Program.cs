@@ -129,6 +129,8 @@ builder.Services.AddScoped<ICourseService, CourseService>();
 builder.Services.AddScoped<IModuleService, ModuleService>();
 builder.Services.AddScoped<ILessonService, LessonService.Application.Services.LessonService>();
 builder.Services.AddScoped<IExerciseService, ExerciseService>();
+// ANTHROPIC AI — BE-18
+builder.Services.AddScoped<IAiExerciseService, AnthropicExerciseService>();
 
 // CONTROLLERS + OPENAPI
 builder.Services.AddControllers()

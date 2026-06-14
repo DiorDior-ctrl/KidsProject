@@ -53,8 +53,8 @@ namespace LessonService.Application.Services
             request.OrderIndex,
             request.ContentJson,
             request.CorrectAnswer,
-            request.XpReward,
-            request.CorrectAnswer
+            request.XpReward
+            
             );
 
             await _exerciseRepository.AddAsync(exercise, cancellationToken);

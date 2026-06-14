@@ -20,13 +20,12 @@ public class Exercise
     private Exercise() { }
 
     public static Exercise Create(
-        Guid lessonId,
-        ExerciseType type,
-        int orderIndex,
-        string contentJson,
-        string correctAnswer,
-        int xpReward,
-        string CorrectAnswer)
+    Guid lessonId,
+    ExerciseType type,
+    int orderIndex,
+    string contentJson,
+    string correctAnswer,
+    int xpReward)
     {
         if (string.IsNullOrWhiteSpace(contentJson))
             throw new BusinessException("Content nuk mund të jetë bosh.");
